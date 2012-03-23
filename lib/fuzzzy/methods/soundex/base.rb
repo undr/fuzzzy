@@ -7,6 +7,8 @@ module Fuzzzy
 
       def with_context context
         @context = context and yield if context
+      rescue => e
+        raise e
       ensure
         @context = nil
       end

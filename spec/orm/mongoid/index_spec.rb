@@ -116,6 +116,21 @@ describe Fuzzzy::Mongoid::Index do
         
         specify{model.create_fuzzzy_indexes{}}
       end
+      
+      context 'with empty changed attributes' do
+        let(:index_context){context.merge(
+          :id => model.id,
+          :dictionary_string => model.name
+        )}
+        
+        before do
+          model.stub(:changed => [])
+          indexer.should_not_receive(:create_index)
+          IndexedCity.stub(:indexer => indexer)
+        end
+        
+        specify{model.create_fuzzzy_indexes{}}
+      end
     end
     
     describe '.delete_fuzzzy_indexes' do

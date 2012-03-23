@@ -9,12 +9,12 @@ module Fuzzzy
               {
                 :id => id,
                 :distance => Levenshtein.distance(query_index_string, string),
-                :alpha => sort_metric(string)
+                :alpha => string
               }
             end
 
             result.sort_by!{|item|item[sort_method]} if sort_method
-            result.reject!{|item|item[:distance] >= context[:distance]} if context[:distance]
+            result.reject!{|item|item[:distance] > context[:distance]} if context[:distance]
             result.map{|item|item[:id]}
           end
         end

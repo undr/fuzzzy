@@ -13,14 +13,14 @@ module Fuzzzy
         end
       end
 
-      def delete_index context=nil
+      def delete_index ctx=nil
         block = lambda do
           if older_string = redis.get(dictionary_key(context[:id]))
-            redis.srem(index_key(soundex(older_string), context[:id]))
+            redis.srem(index_key(soundex(older_string)), context[:id])
             redis.del(dictionary_key(context[:id]))
           end
         end
-        context ? with_context(context, &block) : block.call
+        ctx ? with_context(ctx, &block) : block.call
       end
     end
   end
