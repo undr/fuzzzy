@@ -16,6 +16,10 @@ module Fuzzzy
           self.fuzzzy_indexes ||= {}
           self.fuzzzy_indexes[field.to_sym] = default_options.merge(options)
         end
+        
+        def clear_fuzzzy_index field
+          self.fuzzzy_indexes.delete(field.to_sym)
+        end
 
         def has_fuzzzy_indexes?
           !!self.fuzzzy_indexes
@@ -24,7 +28,6 @@ module Fuzzzy
         def default_options
           {
             :method => :soundex,
-            :only_ids => false,
             :model_name => self.name.downcase
           }
         end
@@ -46,7 +49,7 @@ module Fuzzzy
         end
 
         def search_by field, query, context={}
-          index_context = self.fuzzzy_indexes[field.to_sym]
+          index_context = self.fuzzzy_indexes[field.to_sym].dup
           raise "You have not fuzzy index for '#{field}' field" unless index_context
           
           index_context[:query] = query
@@ -66,15 +69,10 @@ module Fuzzzy
       end
 
       def change_indexes command, condition=nil
-        Fuzzzy.redis.multi
         self.class.fuzzzy_indexes.each do |(field, opts)|
-          change_field_index(command, field, opts) if command == :delete_index ||
-            self.changed.includes?(field.to_s)
+          change_field_index(command, field, opts.dup) if command == :delete_index ||
+            self.changed.include?(field.to_s)
         end
-        yield
-        Fuzzzy.redis.exec
-      rescue
-        Fuzzzy.redis.discard
       end
 
       def change_field_index command, field, options

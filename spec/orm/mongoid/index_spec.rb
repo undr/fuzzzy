@@ -4,8 +4,7 @@ describe Fuzzzy::Mongoid::Index do
   let(:context){{
     :field => :name,
     :model_name => 'indexedcity',
-    :method => :soundex,
-    :only_ids => false
+    :method => :soundex
   }}
   
   describe '.define_fuzzzy_index' do
@@ -51,17 +50,17 @@ describe Fuzzzy::Mongoid::Index do
       let(:searcher){mock(:searcher)}
       
       before do
-        searcher.should_receive(:search).with(index_context)
+        searcher.should_receive(:search).with(search_context)
         IndexedCity.stub(:searcher => searcher)
       end
     
       context 'with default context' do
-        let(:index_context){context.merge(:query => query)}
+        let(:search_context){context.merge(:query => query)}
         specify{IndexedCity.search_by(:name, query)}
       end
     
       context 'with custom context' do
-        let(:index_context){context.merge(
+        let(:search_context){context.merge(
           :query => query,
           :only_ids => true,
           :sort_method => :alpha,
@@ -81,6 +80,71 @@ describe Fuzzzy::Mongoid::Index do
         lambda{
           IndexedCity.search_by(:country, query)
         }.should raise_error
+      end
+    end
+  end
+
+  context do
+    let(:model){IndexedCity.new(:id => BSON::ObjectId.new, :name => 'Moscow', :country => 'Russia')}
+    let(:indexer){mock(:indexer)}
+    
+    describe '.create_fuzzzy_indexes' do
+      context do
+        let(:index_context){context.merge(
+          :id => model.id,
+          :dictionary_string => model.name
+        )}
+        
+        before do
+          indexer.should_receive(:create_index).with(index_context)
+          IndexedCity.stub(:indexer => indexer)
+        end
+        
+        specify{model.create_fuzzzy_indexes{}}
+      end
+      
+      context 'with multi fields index' do
+        before do
+          IndexedCity.define_fuzzzy_index(:country)
+          indexer.should_receive(:create_index).exactly(2).times
+          IndexedCity.stub(:indexer => indexer)
+        end
+        
+        after do
+          IndexedCity.clear_fuzzzy_index(:country)
+        end
+        
+        specify{model.create_fuzzzy_indexes{}}
+      end
+    end
+    
+    describe '.delete_fuzzzy_indexes' do
+      context do
+        let(:index_context){context.merge(
+          :id => model.id,
+          :dictionary_string => model.name
+        )}
+        
+        before do
+          indexer.should_receive(:delete_index).with(index_context)
+          IndexedCity.stub(:indexer => indexer)
+        end
+        
+        specify{model.delete_fuzzzy_indexes{}}
+      end
+      
+      context 'with multi fields index' do
+        before do
+          IndexedCity.define_fuzzzy_index(:country)
+          indexer.should_receive(:delete_index).exactly(2).times
+          IndexedCity.stub(:indexer => indexer)
+        end
+        
+        after do
+          IndexedCity.clear_fuzzzy_index(:country)
+        end
+        
+        specify{model.delete_fuzzzy_indexes{}}
       end
     end
   end
