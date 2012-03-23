@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", ">= 2"
   s.add_development_dependency "yard", "~> 0.6.0"
   s.add_development_dependency "ruby-debug19"
+  s.add_development_dependency "bson_ext"
+  s.add_development_dependency "mongoid"
   s.add_development_dependency "pry"
   
   s.add_dependency "bundler"
@@ -26,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency "yajl-ruby"
   s.add_dependency "levenshtein-ffi"
   s.add_dependency "text"
+  s.add_dependency "hiredis"
   s.add_dependency "redis"
   s.add_dependency "daemons"
   

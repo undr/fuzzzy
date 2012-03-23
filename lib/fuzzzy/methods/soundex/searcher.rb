@@ -27,10 +27,6 @@ module Fuzzzy
       def query_index_string
         context[:query]
       end
-
-      def model_name
-        context[:model_name].downcase
-      end
     end
   end
 end

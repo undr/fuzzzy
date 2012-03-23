@@ -30,6 +30,10 @@ module Fuzzzy
           id
         ].join(':')
       end
+
+      def model_name
+        context[:model_name]
+      end
     end
   end
 end

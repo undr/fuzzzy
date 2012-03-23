@@ -1,0 +1,7 @@
+development:
+  host: localhost
+  database: moneybot_dev
+
+test:
+  host: localhost
+  database: moneybot_test
