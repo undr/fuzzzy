@@ -3,7 +3,7 @@ module Fuzzzy
     class Searcher < Base
       def search cntx
         with_context(cntx) do
-          if ids = redis.sunion(*(index_keys & redis.keys))
+          if ids = redis.sunion(*index_keys)
             ids.each do |id|
               string = redis.get(dictionary_key(id))
               dist = Levenshtein.distance(query_index_string, string)
