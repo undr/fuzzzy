@@ -30,6 +30,7 @@ module FuzzzyBenchmark
         searcher.search(context)
       end
     end
+    puts ''
   end
   
   def get_result cntx
