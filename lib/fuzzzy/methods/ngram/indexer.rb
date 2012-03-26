@@ -8,11 +8,11 @@ module Fuzzzy
       def create_index cntx
         with_context(cntx) do
           delete_index
-          
+
           ngrams.each_with_index do |ngram, index|
             redis.sadd(index_key(index, ngram), context[:id])
           end
-          
+
           redis.set(dictionary_key(context[:id]), query_index_string)
         end
       end

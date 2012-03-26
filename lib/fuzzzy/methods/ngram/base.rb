@@ -5,8 +5,8 @@ module Fuzzzy
 
       attr_reader :context
 
-      def with_context context
-        @context = context and yield if context
+      def with_context cntx
+        @context = cntx and yield if cntx
       rescue => e
         raise e
       ensure
