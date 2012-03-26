@@ -23,18 +23,18 @@ describe Fuzzzy::Soundex::Indexer do
       indexer.create_index(context)
     end
     
-    specify{Fuzzzy.redis.smembers('fuzzzy:city:name:soundex_index:' + soundex).should == [id]}
+    specify{Fuzzzy.redis.smembers('fuzzzy:city:name:soundex_i:' + soundex).should == [id]}
     specify{Fuzzzy.redis.get('fuzzzy:city:name:dictionary:' + id).should == dictionary_string}
   end
   
   describe '.delete_index' do
     before do
-      Fuzzzy.redis.sadd('fuzzzy:city:name:soundex_index:' + soundex, id)
+      Fuzzzy.redis.sadd('fuzzzy:city:name:soundex_i:' + soundex, id)
       Fuzzzy.redis.set('fuzzzy:city:name:dictionary:' + id, dictionary_string)
       indexer.delete_index(context)
     end
     
-    specify{Fuzzzy.redis.exists('fuzzzy:city:name:soundex_index:').should be_false}
+    specify{Fuzzzy.redis.exists('fuzzzy:city:name:soundex_i:' + soundex).should be_false}
     specify{Fuzzzy.redis.exists('fuzzzy:city:name:dictionary:' + id).should be_false}
   end
 end

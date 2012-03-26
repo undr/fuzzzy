@@ -20,7 +20,7 @@ module Fuzzzy
       def index_key soundex_key
         [
           shared_key,
-          'soundex_index',
+          'soundex_i',
           soundex_key
         ].join(':')
       end

@@ -15,7 +15,7 @@ describe Fuzzzy::Soundex::Searcher do
   end
   
   def add_index id, dictionary_string
-    Fuzzzy.redis.sadd('fuzzzy:city:name:soundex_index:' + Text::Soundex.soundex(dictionary_string), id)
+    Fuzzzy.redis.sadd('fuzzzy:city:name:soundex_i:' + Text::Soundex.soundex(dictionary_string), id)
     Fuzzzy.redis.set('fuzzzy:city:name:dictionary:' + id, dictionary_string)
   end
   
@@ -49,11 +49,11 @@ describe Fuzzzy::Soundex::Searcher do
       specify{searcher.search(context.merge(:query => 'peterberg')).should == ['12346', '12347', '12348']}
       specify{searcher.search(context.merge(
         :query => 'piterburg',
-        :sort_method => :distance
+        :sort_by => :distance
       )).should == ['12348', '12347', '12346']}
       specify{searcher.search(context.merge(
         :query => 'piterburg',
-        :sort_method => :alpha
+        :sort_by => :alpha
       )).should == ['12347', '12348', '12346']}
       specify{searcher.search(context.merge(
         :query => 'piterburg',

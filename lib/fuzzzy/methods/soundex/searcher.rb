@@ -13,15 +13,17 @@ module Fuzzzy
               }
             end
 
-            result.sort_by!{|item|item[sort_method]} if sort_method
+            result.sort_by!{|item|item[sort_by]} if sort_by
             result.reject!{|item|item[:distance] > context[:distance]} if context[:distance]
             result.map{|item|item[:id]}
+          else
+            []
           end
         end
       end
 
-      def sort_method
-        context[:sort_method]
+      def sort_by
+        context[:sort_by]
       end
 
       def query_index_string
