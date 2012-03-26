@@ -23,6 +23,14 @@ module Fuzzzy
     autoload :Indexer, 'fuzzzy/methods/soundex/indexer'
     autoload :Searcher, 'fuzzzy/methods/soundex/searcher'
   end
+  
+  module Ngram
+    extend ActiveSupport::Autoload
+
+    autoload :Base, 'fuzzzy/methods/ngram/base'
+    autoload :Indexer, 'fuzzzy/methods/ngram/indexer'
+    autoload :Searcher, 'fuzzzy/methods/ngram/searcher'
+  end
 
   if defined?(Mongoid)
     module Mongoid
