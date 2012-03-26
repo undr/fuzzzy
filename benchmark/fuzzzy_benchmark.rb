@@ -2,8 +2,8 @@ require 'csv'
 require 'benchmark'
 module FuzzzyBenchmark
   module_function
-  def process type, contexts, times=1000, &block
-    @type = type
+  def process meth, contexts, times=1000, &block
+    @search_method = meth
     @times = times
     prepare_indexes
     
@@ -17,7 +17,7 @@ module FuzzzyBenchmark
     
   ensure
     Fuzzzy.redis.flushdb
-    @type = nil
+    @search_method = nil
   end
   
   def report benchmark, context
@@ -40,7 +40,7 @@ module FuzzzyBenchmark
   end
 
   def prepare_indexes
-    puts "Create index for #{type}:"
+    puts "Create index for #{search_method}:"
     puts "#{fixtures.size} names"
 
     start = Time.now
@@ -59,22 +59,22 @@ module FuzzzyBenchmark
     {
       :field => :name,
       :model_name => 'city',
-      :method => type
+      :method => search_method
     }
   end
 
   def class_for klass
-    "fuzzzy/#{type}/#{klass}".classify.constantize
+    "fuzzzy/#{search_method}/#{klass}".classify.constantize
   end
 
   def indexer
     @indexer ||= {}
-    @indexer[type] ||= class_for(:indexer).new
+    @indexer[search_method] ||= class_for(:indexer).new
   end
 
   def searcher
     @searcher ||= {}
-    @searcher[type] ||= class_for(:searcher).new
+    @searcher[search_method] ||= class_for(:searcher).new
   end
 
   def fixtures
@@ -89,7 +89,11 @@ module FuzzzyBenchmark
     end
   end
   
-  def type
-    @type
+  def search_method
+    @search_method
+  end
+  
+  def search_method= meth
+    @search_method = meth
   end
 end
