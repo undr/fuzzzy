@@ -25,7 +25,7 @@ module Fuzzzy
         keys = []
         ngrams.each_with_index do |ngram, index|
           segment_points(index) do |i|
-            keys << index_key(i, ngram)
+            keys << index_key(ngram, i)
           end
         end
         keys

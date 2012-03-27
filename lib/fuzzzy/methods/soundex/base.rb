@@ -1,40 +1,12 @@
 module Fuzzzy
   module Soundex
-    class Base
-      include Redis
-
-      attr_reader :context
-
-      def with_context cntx
-        @context = cntx and yield if cntx
-      rescue => e
-        raise e
-      ensure
-        @context = nil
-      end
-
+    class Base < MethodBase
       def soundex string=nil
         context[:soundex] ||= Text::Soundex.soundex(string || query_index_string)
       end
 
-      def index_key soundex_key
-        [
-          shared_key,
-          'soundex_i',
-          soundex_key
-        ].join(':')
-      end
-
-      def dictionary_key id
-        [
-          shared_key,
-          'dictionary',
-          id
-        ].join(':')
-      end
-
-      def model_name
-        context[:model_name]
+      def type
+        :soundex
       end
     end
   end

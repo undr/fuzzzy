@@ -1,43 +1,14 @@
 module Fuzzzy
   module Ngram
-    class Base
-      include Redis
-
-      attr_reader :context
-
-      def with_context cntx
-        @context = cntx and yield if cntx
-      rescue => e
-        raise e
-      ensure
-        @context = nil
-      end
-
-      def index_key index, ngram_key
-        [
-          shared_key,
-          'ngram_i',
-          ngram_key,
-          index
-        ].join(':')
-      end
-
-      def dictionary_key id
-        [
-          shared_key,
-          'dictionary',
-          id
-        ].join(':')
-      end
-
-      def model_name
-        context[:model_name]
-      end
-      
+    class Base < MethodBase
       def ngrams string=nil
         string ||= query_index_string
         string.downcase!
         context[string] ||= (0..string.length-3).to_a.collect{|idx| string[idx,3] }
+      end
+      
+      def type
+        :ngram
       end
     end
   end

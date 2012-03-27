@@ -123,16 +123,16 @@ describe Fuzzzy::Soundex::Searcher do
     specify do
       searcher.with_context(context) do
         searcher.index_keys.should =~ [
-          searcher.index_key(0, 'mas'),
-          searcher.index_key(1, 'mas'),
-          searcher.index_key(0, 'asc'),
-          searcher.index_key(1, 'asc'),
-          searcher.index_key(2, 'asc'),
-          searcher.index_key(1, 'sco'),
-          searcher.index_key(2, 'sco'),
-          searcher.index_key(3, 'sco'),
-          searcher.index_key(2, 'cow'),
-          searcher.index_key(3, 'cow')
+          searcher.index_key('mas', 0),
+          searcher.index_key('mas', 1),
+          searcher.index_key('asc', 0),
+          searcher.index_key('asc', 1),
+          searcher.index_key('asc', 2),
+          searcher.index_key('sco', 1),
+          searcher.index_key('sco', 2),
+          searcher.index_key('sco', 3),
+          searcher.index_key('cow', 2),
+          searcher.index_key('cow', 3)
         ]
       end
     end
