@@ -27,7 +27,7 @@ module Fuzzzy
       end
 
       def query_index_string
-        context[:query]
+        context[:prepared_query] ||= prepare_string(context[:query])
       end
     end
   end

@@ -2,14 +2,14 @@ require 'csv'
 require 'benchmark'
 module FuzzzyBenchmark
   module_function
-  def process meth, contexts, times=1000, &block
+  def process meth, contexts, index_cntx={}, times=100, &block
     @search_method = meth
     @times = times
-    prepare_indexes
+    prepare_indexes(default_context.merge(index_cntx))
     
     Benchmark.bm do |benchmark|
       contexts.each do |context|
-        report(benchmark, context)
+        report(benchmark, context.merge(index_cntx))
       end
     
       yield(benchmark, self) if block_given?
@@ -21,7 +21,8 @@ module FuzzzyBenchmark
   end
   
   def report benchmark, context
-    result, strings = get_result(default_context.merge(context))
+    context = default_context.merge(context)
+    result, strings = get_result(context)
 
     puts "Execute #{@times} times"
     puts "query: '#{context[:query]}', result: '#{result}' => #{strings}"
@@ -39,13 +40,13 @@ module FuzzzyBenchmark
     [result, strings]
   end
 
-  def prepare_indexes
+  def prepare_indexes cntx
     puts "Create index for #{search_method}:"
     puts "#{fixtures.size} names"
 
     start = Time.now
     fixtures.each do |source|
-      indexer.create_index(default_context.merge(
+      indexer.create_index(cntx.merge(
         :dictionary_string => source[:name].downcase,
         :id => source[:id]
       ))

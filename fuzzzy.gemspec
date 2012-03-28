@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bson_ext"
   s.add_development_dependency "mongoid"
   s.add_development_dependency "pry"
+  s.add_development_dependency 'ruby-prof'
   
   s.add_dependency "bundler"
   s.add_dependency "rake"

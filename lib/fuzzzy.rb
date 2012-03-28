@@ -60,9 +60,34 @@ module Fuzzzy
       :database => 0
     )
   end
-
+  
   def redis= connection
     @redis = connection
+  end
+  
+  def stopwords
+    @stopwords ||= default_stopwords
+  end
+  
+  def stopwords= value
+    @stopwords = load_stopwords(value).uniq
+  end
+  
+  def load_stopwords options
+    if options.is_a?(Hash)
+      stops = load_stopwords(options[:stopwords])
+      options[:default] ? (stops + default_stopwords) : stops
+    elsif options.is_a?(Array)
+      options
+    elsif options.is_a?(String) || options.is_a?(Pathname)
+      YAML.load_file(options)
+    else
+      []
+    end
+  end
+  
+  def default_stopwords
+    @default_stopwords ||= load_stopwords(Fuzzzy.root.join('dictionary', 'en_stopwords.yml').to_s)
   end
 
   def env

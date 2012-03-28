@@ -2,7 +2,7 @@ module Fuzzzy
   module Ngram
     class Indexer < Base
       def query_index_string
-        context[:dictionary_string]
+        context[:prepared_dictionary_string] ||= prepare_string(context[:dictionary_string])
       end
 
       def create_index cntx
