@@ -20,7 +20,12 @@ describe Fuzzzy::Ngram::Indexer do
   describe '#ngrams' do
     specify do
       indexer.with_context(context) do
-        indexer.ngrams('Moscow').should == ['mos', 'osc', 'sco', 'cow']
+        indexer.ngrams('mo').should == ['mo']
+      end
+    end
+    specify do
+      indexer.with_context(context) do
+        indexer.ngrams('mos').should == ['mos']
       end
     end
     specify do
