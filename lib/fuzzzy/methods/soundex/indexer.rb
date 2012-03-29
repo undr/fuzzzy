@@ -7,6 +7,8 @@ module Fuzzzy
 
       def create_index cntx
         with_context(cntx) do
+          return if query_index_string.empty?
+
           delete_index
           redis.sadd(index_key(soundex), context[:id])
           redis.set(dictionary_key(context[:id]), query_index_string)

@@ -17,6 +17,7 @@ module Fuzzzy
     end
     
     def prepare_string string
+      return '' unless string
       str = string.dup.downcase
       str = context[:filter].call(str) if context[:filter] && context[:filter].respond_to?(:call)
       str = (str.split - stopwords).join(' ') if context[:strip_stopwords]

@@ -3,6 +3,8 @@ module Fuzzzy
     class Searcher < Base
       def search context
         with_context(context) do
+          return if query_index_string.empty?
+
           if ids = redis.smembers(index_key(soundex))
             result = ids.map do |id|
               string = redis.get(dictionary_key(id))

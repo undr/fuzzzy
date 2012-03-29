@@ -3,6 +3,8 @@ module Fuzzzy
     class Searcher < Base
       def search cntx
         with_context(cntx) do
+          return [] if query_index_string.empty?
+          
           if ids = redis.sunion(*index_keys)
             ids.each do |id|
               string = redis.get(dictionary_key(id))

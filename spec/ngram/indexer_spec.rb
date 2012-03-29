@@ -59,6 +59,18 @@ describe Fuzzzy::Ngram::Indexer do
       Fuzzzy.redis.sunion(*(keys - dictionary_keys)).should == [id]
     end
     
+    context 'with empty string' do
+      let(:dictionary_string){''}
+      
+      specify{keys.size.should == 0}
+    end
+    
+    context 'with nulled string' do
+      let(:dictionary_string){nil}
+      
+      specify{keys.size.should == 0}
+    end
+    
     context 'with multiple calls' do
       let(:another_id){'11111'}
       let(:dictionary_keys){[

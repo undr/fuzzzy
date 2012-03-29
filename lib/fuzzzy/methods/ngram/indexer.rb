@@ -7,6 +7,8 @@ module Fuzzzy
 
       def create_index cntx
         with_context(cntx) do
+          return if query_index_string.empty?
+
           delete_index
 
           ngrams.each_with_index do |ngram, index|
@@ -23,7 +25,7 @@ module Fuzzzy
             ngrams(older_string).each_with_index do |ngram, index|
               redis.srem(index_key(ngram, index), context[:id])
             end
-            
+
             redis.del(dictionary_key(context[:id]))
           end
         end
