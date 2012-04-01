@@ -1,6 +1,11 @@
 require 'inline'
 module Fuzzzy
   module Redis
+    # Ruby implementation:
+    # def index_key key, key2=nil
+    #   key = "#{key}:#key2" if key2
+    #   "#{shared_key}:#{index_key}:#{key}"
+    # end
     INDEX_KEY = <<-EOC
 VALUE 
 _index_key(int argc, VALUE *argv, VALUE self) 
@@ -10,7 +15,7 @@ _index_key(int argc, VALUE *argv, VALUE self)
   VALUE key, key2;
 
   if(rb_scan_args(argc, argv, "11", &key, &key2) == 2) {
-    char sep[2] = ":\0";
+    char sep[2] = ":";
     key = rb_str_dup(key);
     rb_str_cat(key, sep, 1);
     rb_str_concat(key, rb_funcall(key2, rb_intern("to_s"), 0));
@@ -39,7 +44,5 @@ EOC
     def dictionary_key id
       "#{shared_key}:dictionary:#{id}"
     end
-
-    
   end
 end
