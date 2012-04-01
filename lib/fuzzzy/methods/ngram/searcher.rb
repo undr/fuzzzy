@@ -1,6 +1,44 @@
 module Fuzzzy
   module Ngram
     class Searcher < Base
+      # Ruby implementation:
+      # def segment_points index
+      #   right = distance + index
+      #   left = index > distance ? (index - distance) : 0
+      #   i = left
+      #   while i <= right do
+      #     yield i
+      #     i += 1
+      #   end
+      # end
+      SEGMENT_POINTS = <<-EOC
+VALUE 
+_segment_points(VALUE self, VALUE _index) 
+{
+  int index, distance, left, right, i;
+
+  index = NUM2INT(_index);
+  distance = NUM2INT(rb_funcall(self, rb_intern("distance"), 0));
+  right = index + distance;
+
+  if(index > distance) {
+    left = index - distance;
+  } else {
+    left = 0;
+  }
+
+  for(i = left; i <= right; i++) {
+    rb_yield(INT2NUM(i));
+  }
+
+  return Qnil;
+}
+EOC
+
+      inline do |builder|
+        builder.c_raw(SEGMENT_POINTS, :method_name => 'segment_points', :arity => 1)
+      end
+
       def search cntx
         with_context(cntx) do
           return [] if query_index_string.empty?
@@ -30,20 +68,6 @@ module Fuzzzy
           end
         end
         keys
-      end
-
-      def segment_points index
-        right = distance + index
-        left = index > distance ? (index - distance) : 0
-        i = left
-        while i <= right do
-          yield i
-          i += 1
-        end
-      end
-
-      def crop_length index
-        ngrams.size - (index + 1)
       end
 
       def distance
