@@ -4,7 +4,7 @@ require 'fuzzzy_benchmark'
 
 
 puts 'Without stripping stopwords'
-FuzzzyBenchmark.process(:ngram, [{
+FuzzzyBenchmark.benchmark(:ngram, [{
   :query => 'eastleigh naersouthempton',
   :distance => 4
 }, {
@@ -16,7 +16,7 @@ FuzzzyBenchmark.process(:ngram, [{
 }])
 
 puts 'With stripping stopwords'
-FuzzzyBenchmark.process(:ngram, [{
+FuzzzyBenchmark.benchmark(:ngram, [{
   :query => 'eastleigh naersouthempton',
   :distance => 4,
   :strip_stopwords => true
@@ -29,3 +29,9 @@ FuzzzyBenchmark.process(:ngram, [{
   :distance => 1,
   :strip_stopwords => true
 }], {:strip_stopwords => true})
+
+FuzzzyBenchmark.profile(:ngram, {
+  :query => 'eastleigh naersouthempton',
+  :distance => 4,
+  :strip_stopwords => true
+}, {:strip_stopwords => true}, 1000)

@@ -32,6 +32,9 @@ Gem::Specification.new do |s|
   s.add_dependency "hiredis"
   s.add_dependency "redis"
   s.add_dependency "daemons"
+  s.add_dependency "ZenTest", "4.5.0"
+  s.add_dependency 'RubyInline'
+  
   
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

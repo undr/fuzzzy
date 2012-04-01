@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Fuzzzy::Soundex::Searcher do
+describe Fuzzzy::Ngram::Searcher do
   let(:indexer){Fuzzzy::Ngram::Indexer.new}
   let(:index_context){{
     :field => :name,

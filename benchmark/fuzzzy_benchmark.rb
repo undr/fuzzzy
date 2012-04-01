@@ -1,8 +1,10 @@
 require 'csv'
 require 'benchmark'
+require 'ruby-prof'
+
 module FuzzzyBenchmark
   module_function
-  def process meth, contexts, index_cntx={}, times=100, &block
+  def benchmark meth, contexts, index_cntx={}, times=100, &block
     @search_method = meth
     @times = times
     prepare_indexes(default_context.merge(index_cntx))
@@ -20,13 +22,37 @@ module FuzzzyBenchmark
     @search_method = nil
   end
   
-  def report benchmark, context
+  def profile meth, context, index_cntx={}, times=100, &block
+    @search_method = meth
+    @times = times
+    prepare_indexes(default_context.merge(index_cntx))
+    
+    RubyProf.start
+    
+    @times.times do
+      searcher.search(context)
+    end
+    
+    result = RubyProf.stop
+    
+    html_printer = RubyProf::CallStackPrinter.new(result)
+    #printer = RubyProf::GraphPrinter.new(result)
+    #printer.print(STDOUT, :min_percent=>0)
+    File.open(Fuzzzy.root.join('benchmark', 'graph_report.html'), 'w') do |file| 
+      html_printer.print(file)
+    end
+  ensure
+    Fuzzzy.redis.flushdb
+    @search_method = nil
+  end
+  
+  def report bench, context
     context = default_context.merge(context)
     result, strings = get_result(context)
 
     puts "Execute #{@times} times"
     puts "query: '#{context[:query]}', result: '#{result}' => #{strings}"
-    benchmark.report(context[:title] || '') do
+    bench.report(context[:title] || '') do
       @times.times do
         searcher.search(context)
       end

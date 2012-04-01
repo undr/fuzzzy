@@ -5,8 +5,8 @@ module Fuzzzy
         context[:soundex] ||= Text::Soundex.soundex(string || query_index_string)
       end
 
-      def type
-        :soundex
+      def index_type
+        'soundex_i'
       end
     end
   end

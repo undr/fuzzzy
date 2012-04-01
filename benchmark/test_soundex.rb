@@ -3,7 +3,7 @@ require File.expand_path('../../lib/fuzzzy', __FILE__)
 require 'fuzzzy_benchmark'
 
 puts 'Without stripping stopwords'
-FuzzzyBenchmark.process(:soundex, [{
+FuzzzyBenchmark.benchmark(:soundex, [{
   :query => 'eastleigh naersouthempton',
   :distance => 4
 }, {
@@ -15,7 +15,7 @@ FuzzzyBenchmark.process(:soundex, [{
 }])
 
 puts 'With stripping stopwords'
-FuzzzyBenchmark.process(:soundex, [{
+FuzzzyBenchmark.benchmark(:soundex, [{
   :query => 'eastleigh naersouthempton',
   :distance => 4,
   :strip_stopwords => true
