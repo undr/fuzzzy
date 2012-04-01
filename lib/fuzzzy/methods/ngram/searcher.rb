@@ -4,7 +4,6 @@ module Fuzzzy
       def search cntx
         with_context(cntx) do
           return [] if query_index_string.empty?
-          
           if ids = redis.sunion(*index_keys)
             ids.each do |id|
               string = redis.get(dictionary_key(id))
@@ -34,10 +33,12 @@ module Fuzzzy
       end
 
       def segment_points index
-        right = crop_length(index) >= distance ? (distance + index) : (ngrams.size - 1)
+        right = distance + index
         left = index > distance ? (index - distance) : 0
-        (left..right).each do |i|
+        i = left
+        while i <= right do
           yield i
+          i += 1
         end
       end
 

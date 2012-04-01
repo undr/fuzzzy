@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-describe Fuzzzy::Soundex::Searcher do
 describe Fuzzzy::Ngram::Searcher do
   let(:indexer){Fuzzzy::Ngram::Indexer.new}
   let(:index_context){{
@@ -47,7 +46,7 @@ describe Fuzzzy::Ngram::Searcher do
         [0, 1],     # mos
         [0, 1, 2],  # osk
         [1, 2, 3],  # sko
-        [2, 3],     # kow
+        [2, 3, 4],  # kow
       ]}
       before do
         searcher.with_context(:distance => 1, :query => 'moscow') do
@@ -68,10 +67,10 @@ describe Fuzzzy::Ngram::Searcher do
     context 'when distance = 3' do
       let(:result){[]}
       let(:sample){[
-        [0, 1, 2, 3],  # mos
-        [0, 1, 2, 3],  # osk
-        [0, 1, 2, 3],  # sko
-        [0, 1, 2, 3]   # kow
+        [0, 1, 2, 3],         # mos
+        [0, 1, 2, 3, 4],      # osk
+        [0, 1, 2, 3, 4, 5],   # sko
+        [0, 1, 2, 3, 4, 5, 6] # kow
       ]}
       before do
         searcher.with_context(:distance => 3, :query => 'moscow') do
@@ -92,15 +91,15 @@ describe Fuzzzy::Ngram::Searcher do
     context 'when distance = 3 and long word' do
       let(:result){[]}
       let(:sample){[
-        [0, 1, 2, 3],           # lev
-        [0, 1, 2, 3, 4],        # eve
-        [0, 1, 2, 3, 4, 5],     # ven
-        [0, 1, 2, 3, 4, 5, 6],  # ens
-        [1, 2, 3, 4, 5, 6, 7],  # nsh
-        [2, 3, 4, 5, 6, 7, 8],  # sht
-        [3, 4, 5, 6, 7, 8],     # hte
-        [4, 5, 6, 7, 8],        # tei
-        [5, 6, 7, 8]            # ein
+        [0, 1, 2, 3],            # lev
+        [0, 1, 2, 3, 4],         # eve
+        [0, 1, 2, 3, 4, 5],      # ven
+        [0, 1, 2, 3, 4, 5,  6],  # ens
+        [1, 2, 3, 4, 5, 6,  7],  # nsh
+        [2, 3, 4, 5, 6, 7,  8],  # sht
+        [3, 4, 5, 6, 7, 8,  9],  # hte
+        [4, 5, 6, 7, 8, 9,  10], # tei
+        [5, 6, 7, 8, 9, 10, 11]  # ein
       ]}
       before do
         searcher.with_context(:distance => 3, :query => 'levenshtein') do
@@ -133,7 +132,8 @@ describe Fuzzzy::Ngram::Searcher do
           searcher.index_key('sco', 2),
           searcher.index_key('sco', 3),
           searcher.index_key('cow', 2),
-          searcher.index_key('cow', 3)
+          searcher.index_key('cow', 3),
+          searcher.index_key('cow', 4)
         ]
       end
     end
@@ -165,6 +165,23 @@ describe Fuzzzy::Ngram::Searcher do
       
       let(:query_string){'jenergija'}
       let(:dictionary_string){'energiya'}
+      let(:id){'12345'}
+      
+      specify{searcher.search(context.merge(
+        :distance => 2
+      )).should == [id]}
+    end
+    
+    context 'single word - #2' do
+      before do
+        indexer.create_index(index_context.merge(
+          :dictionary_string => dictionary_string,
+          :id => id
+        ))
+      end
+      
+      let(:query_string){'rhus'}
+      let(:dictionary_string){'Aarhus'}
       let(:id){'12345'}
       
       specify{searcher.search(context.merge(
