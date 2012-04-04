@@ -28,3 +28,9 @@ FuzzzyBenchmark.benchmark(:soundex, [{
   :distance => 1,
   :strip_stopwords => true
 }], {:strip_stopwords => true})
+
+FuzzzyBenchmark.profile(:soundex, {
+  :query => 'eastleigh naersouthempton',
+  :distance => 4,
+  :strip_stopwords => true
+}, {:strip_stopwords => true}, 1000)

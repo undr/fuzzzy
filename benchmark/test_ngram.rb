@@ -2,7 +2,6 @@ $LOAD_PATH.unshift File.expand_path("../../benchmark", __FILE__)
 require File.expand_path('../../lib/fuzzzy', __FILE__)
 require 'fuzzzy_benchmark'
 
-
 puts 'Without stripping stopwords'
 FuzzzyBenchmark.benchmark(:ngram, [{
   :query => 'eastleigh naersouthempton',
