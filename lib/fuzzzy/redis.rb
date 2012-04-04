@@ -1,7 +1,7 @@
 require 'inline'
 module Fuzzzy
   module Redis
-    # Ruby implementation:
+    # Ruby implementation is:
     # def index_key key, key2=nil
     #   key = "#{key}:#key2" if key2
     #   "#{shared_key}:#{index_key}:#{key}"
