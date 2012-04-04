@@ -36,9 +36,7 @@ module FuzzzyBenchmark
     result = RubyProf.stop
     
     html_printer = RubyProf::CallStackPrinter.new(result)
-    #printer = RubyProf::GraphPrinter.new(result)
-    #printer.print(STDOUT, :min_percent=>0)
-    File.open(Fuzzzy.root.join('benchmark', 'graph_report.html'), 'w') do |file| 
+    File.open(Fuzzzy.root.join('benchmark', 'reports', "#{search_method}_graph.html"), 'w') do |file| 
       html_printer.print(file)
     end
   ensure
