@@ -1,6 +1,7 @@
 module Fuzzzy
   module Soundex
     class Indexer < Base
+      include Fuzzzy::Indexer
       def query_index_string
         context[:prepared_dictionary_string] ||= prepare_string(context[:dictionary_string])
       end
@@ -11,7 +12,7 @@ module Fuzzzy
 
           delete_index
           redis.sadd(index_key(soundex), context[:id])
-          redis.set(dictionary_key(context[:id]), query_index_string)
+          save_dictionary(context[:id], query_index_string)
         end
       end
 
@@ -19,7 +20,7 @@ module Fuzzzy
         block = lambda do
           if older_string = redis.get(dictionary_key(context[:id]))
             redis.srem(index_key(soundex(older_string)), context[:id])
-            redis.del(dictionary_key(context[:id]))
+            delete_dictionary(context[:id])
           end
         end
         cntx ? with_context(cntx, &block) : block.call

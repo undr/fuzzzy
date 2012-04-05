@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe Fuzzzy::Mongoid::Index do
   let(:context){{
-    :field => :name,
-    :model_name => 'indexedcity',
+    :index_name => 'indexedcity:name',
     :method => :soundex
   }}
   

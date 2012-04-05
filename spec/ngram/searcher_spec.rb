@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Fuzzzy::Ngram::Searcher do
   let(:indexer){Fuzzzy::Ngram::Indexer.new}
   let(:index_context){{
-    :field => :name,
-    :model_name => 'city',
+    :index_name => 'city:name',
     :method => :ngram
   }}
   let(:searcher){Fuzzzy::Ngram::Searcher.new}

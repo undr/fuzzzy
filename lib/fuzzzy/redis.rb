@@ -38,11 +38,19 @@ EOC
     end
 
     def shared_key
-      context[:shared_key] ||= "fuzzzy:#{model_name}:#{context[:field]}"
+      context[:shared_key] ||= "fuzzzy:#{index_name}"
     end
 
     def dictionary_key id
       "#{shared_key}:dictionary:#{id}"
+    end
+    
+    def counter_key
+      "fuzzzy:indexes:info"
+    end
+    
+    def self.counter_key
+      "fuzzzy:indexes:info"
     end
   end
 end

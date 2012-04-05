@@ -1,6 +1,7 @@
 module Fuzzzy
   module Ngram
     class Indexer < Base
+      include Fuzzzy::Indexer
       def query_index_string
         context[:prepared_dictionary_string] ||= prepare_string(context[:dictionary_string])
       end
@@ -15,7 +16,7 @@ module Fuzzzy
             redis.sadd(index_key(ngram, index), context[:id])
           end
 
-          redis.set(dictionary_key(context[:id]), query_index_string)
+          save_dictionary(context[:id], query_index_string)
         end
       end
 
@@ -26,7 +27,7 @@ module Fuzzzy
               redis.srem(index_key(ngram, index), context[:id])
             end
 
-            redis.del(dictionary_key(context[:id]))
+            delete_dictionary(context[:id])
           end
         end
         cntx ? with_context(cntx, &block) : block.call

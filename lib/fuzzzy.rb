@@ -16,6 +16,8 @@ module Fuzzzy
 
   autoload :Redis
   autoload :Index
+
+  autoload :Indexer, 'fuzzzy/methods/indexer'
   autoload :MethodBase, 'fuzzzy/methods/method_base'
 
   module Soundex

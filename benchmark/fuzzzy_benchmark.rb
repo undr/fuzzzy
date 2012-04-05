@@ -84,8 +84,7 @@ module FuzzzyBenchmark
 
   def default_context
     {
-      :field => :name,
-      :model_name => 'city',
+      :index_name => 'city:name',
       :method => search_method
     }
   end

@@ -13,11 +13,11 @@ module Fuzzzy
 
       module ClassMethods 
         def define_fuzzzy_index field, options={}
-          options[:field] = field.to_sym
           self.fuzzzy_indexes ||= {}
+          options[:index_name] = index_name(field)
           self.fuzzzy_indexes[field.to_sym] = default_options.merge(options)
         end
-        
+
         def clear_fuzzzy_index field
           self.fuzzzy_indexes.delete(field.to_sym)
         end
@@ -27,10 +27,7 @@ module Fuzzzy
         end
 
         def default_options
-          {
-            :method => :soundex,
-            :model_name => self.name.downcase
-          }
+          {:method => :soundex}
         end
 
         def indexer method
@@ -46,12 +43,16 @@ module Fuzzzy
         def search_by field, query, context={}
           index_context = self.fuzzzy_indexes[field.to_sym].dup
           raise "You have not fuzzy index for '#{field}' field" unless index_context
-          
+
           index_context[:query] = query
           index_context.merge!(context)
           ids = searcher(index_context[:method]).search(index_context)
 
           (index_context[:only_ids] ? ids : self.find(ids)) if ids
+        end
+        
+        def index_name field
+          "#{self.name.downcase}:#{field}"
         end
       end
 

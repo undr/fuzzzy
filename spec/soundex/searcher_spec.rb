@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Fuzzzy::Soundex::Searcher do
   let(:searcher){Fuzzzy::Soundex::Searcher.new}
   let(:context){{
-    :field => :name,
-    :model_name => 'city',
+    :index_name => 'city:name',
     :method => :soundex,
     :query => query_string
   }}

@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Fuzzzy::Soundex::Indexer do
   let(:indexer){Fuzzzy::Soundex::Indexer.new}
   let(:context){{
-    :field => :name,
-    :model_name => 'city',
+    :index_name => 'city:name',
     :method => :soundex,
     :dictionary_string => dictionary_string,
     :id => id
@@ -25,16 +24,17 @@ describe Fuzzzy::Soundex::Indexer do
     
     specify{Fuzzzy.redis.smembers('fuzzzy:city:name:soundex_i:' + soundex).should == [id]}
     specify{Fuzzzy.redis.get('fuzzzy:city:name:dictionary:' + id).should == dictionary_string}
+    specify{Fuzzzy.redis.hgetall(Fuzzzy::Redis.counter_key).should == {'city:name' => '1'}}
   end
   
   describe '.delete_index' do
     before do
-      Fuzzzy.redis.sadd('fuzzzy:city:name:soundex_i:' + soundex, id)
-      Fuzzzy.redis.set('fuzzzy:city:name:dictionary:' + id, dictionary_string)
+      indexer.create_index(context)
       indexer.delete_index(context)
     end
     
     specify{Fuzzzy.redis.exists('fuzzzy:city:name:soundex_i:' + soundex).should be_false}
     specify{Fuzzzy.redis.exists('fuzzzy:city:name:dictionary:' + id).should be_false}
+    specify{Fuzzzy.redis.hgetall(Fuzzzy::Redis.counter_key).should == {'city:name' => '0'}}
   end
 end

@@ -7,12 +7,12 @@ class TestRedis
     'index_type'
   end
 
-  def model_name
-    'model_name'
+  def index_name
+    'model_name:field'
   end
 
   def context
-    {:field => 'field'}
+    {}
   end
 end
 

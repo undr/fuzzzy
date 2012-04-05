@@ -12,8 +12,8 @@ module Fuzzzy
       @context = nil
     end
 
-    def model_name
-      context[:model_name]
+    def index_name
+      context[:index_name]
     end
     
     def prepare_string string
