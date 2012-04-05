@@ -36,6 +36,12 @@ module Fuzzzy
     autoload :Searcher, 'fuzzzy/methods/ngram/searcher'
   end
 
+  module Server
+    extend ActiveSupport::Autoload
+
+    autoload :HTTP, 'fuzzzy/server/http'
+  end
+
   if defined?(Mongoid)
     module Mongoid
       extend ActiveSupport::Autoload

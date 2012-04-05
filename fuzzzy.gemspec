@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_dependency "yajl-ruby"
   s.add_dependency "levenshtein-ffi"
   s.add_dependency "text"
+  s.add_dependency "grape"
   s.add_dependency "hiredis"
   s.add_dependency "redis"
   s.add_dependency "daemons"
