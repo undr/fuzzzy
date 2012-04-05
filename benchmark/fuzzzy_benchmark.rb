@@ -3,6 +3,8 @@ require 'benchmark'
 require 'ruby-prof'
 
 module FuzzzyBenchmark
+  extend Fuzzzy::Index
+
   module_function
   def benchmark meth, contexts, index_cntx={}, times=100, &block
     @search_method = meth
@@ -88,18 +90,12 @@ module FuzzzyBenchmark
     }
   end
 
-  def class_for klass
-    "fuzzzy/#{search_method}/#{klass}".classify.constantize
-  end
-
   def indexer
-    @indexer ||= {}
-    @indexer[search_method] ||= class_for(:indexer).new
+    _indexer(search_method)
   end
 
   def searcher
-    @searcher ||= {}
-    @searcher[search_method] ||= class_for(:searcher).new
+    _searcher(search_method)
   end
 
   def fixtures

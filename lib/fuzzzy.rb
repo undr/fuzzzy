@@ -15,6 +15,7 @@ module Fuzzzy
   extend ActiveSupport::Autoload
 
   autoload :Redis
+  autoload :Index
   autoload :MethodBase, 'fuzzzy/methods/method_base'
 
   module Soundex

@@ -4,6 +4,7 @@ module Fuzzzy
       extend ActiveSupport::Concern
 
       included do
+        extend Fuzzzy::Index
         class_attribute :fuzzzy_indexes
         around_save :create_fuzzzy_indexes
         around_update :create_fuzzzy_indexes
@@ -34,18 +35,12 @@ module Fuzzzy
 
         def indexer method
           return nil unless has_fuzzzy_indexes?
-          @indexer ||= {}
-          @indexer[method] ||= class_for(:indexer, method).new
+          _indexer(method)
         end
 
         def searcher method
           return nil unless has_fuzzzy_indexes?
-          @searcher ||= {}
-          @searcher[method] ||= class_for(:searcher, method).new
-        end
-
-        def class_for type, method
-          "fuzzzy/#{method}/#{type}".classify.constantize
+          _searcher(method)
         end
 
         def search_by field, query, context={}
