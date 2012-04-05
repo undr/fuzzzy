@@ -16,34 +16,35 @@ module Fuzzzy
 
       helpers do
         include Index
-        
+
         def search
           context = search_context
           check_context!(:query, context)
+          context[:distance] = context[:distance].to_i if context[:distance]
           _searcher(context[:index_method]).search(context)
         end
-        
+
         def check_context! *keys
           context = keys.pop
           ([:index_name, :index_method] + keys).each do |key|
             raise ParamsError.new("Parameter :#{key} not found") if context[key].nil?
           end
         end
-        
-        def assign_context! *keys
+
+        def construct_context *keys
           context = {}
           ([:index_name, :index_method] + keys).each do |key|
             context[key] = params[key] if params[key]
           end
           context
         end
-        
-        def index_context *keys
-          assign_context!(:id, :dictionary_string)
+
+        def index_context
+          construct_context(:id, :dictionary_string)
         end
-        
+
         def search_context
-          assign_context!(:query, :distance, :sort_by)
+          construct_context(:query, :distance, :sort_by)
         end
       end
 
@@ -66,27 +67,27 @@ module Fuzzzy
         get 'indexes' do
           indexes_info = {
             :redis_size => Fuzzzy.redis.info['used_memory_human'],
-            :index => Fuzzzy.redis.hgetall(Fuzzzy::Redis.counter_key)
+            :indexes => Fuzzzy.redis.hgetall(Fuzzzy::Redis.counter_key)
           }
         end
       end
-      
+
       resource :indexes do
         # curl  /v1/indexes?index_name=city:name&index_method=ngram&query=search%20string
         get do
           search
         end
-        
+
         post '/search' do
           search
         end
-        
+
         post do
           context = index_context
           check_context!(:id, :dictionary_string, context)
           _indexer(context[:index_method]).create_index(context)
         end
-        
+
         delete do
           context = index_context
           check_context!(:id, context)
