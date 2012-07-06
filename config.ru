@@ -9,4 +9,3 @@ Fuzzzy.redis = Redis.new(
 )
 
 run Fuzzzy::Server::HTTP
-

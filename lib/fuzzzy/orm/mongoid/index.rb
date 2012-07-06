@@ -48,9 +48,13 @@ module Fuzzzy
           index_context.merge!(context)
           ids = searcher(index_context[:method]).search(index_context)
 
-          (index_context[:only_ids] ? ids : self.find(ids)) if ids
+          (only_ids? ? ids : scoped.find(ids)) if ids
         end
-        
+
+        def only_ids?
+          index_context[:only_ids] && !index_context[:with_cache]
+        end
+
         def index_name field
           "#{self.name.downcase}:#{field}"
         end

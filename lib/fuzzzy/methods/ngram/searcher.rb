@@ -53,7 +53,8 @@ EOC
               } if dist <= distance
             end
             result.sort_by!{|item|item[sort_by]} if sort_by
-            result.map{|item|item[:id]}
+            result.map!{|item|item[:id]} unless with_cache?
+            result
           else
             []
           end
@@ -76,6 +77,10 @@ EOC
 
       def result
         context[:result] ||= []
+      end
+
+      def with_cache?
+        context[:with_cache] ||= false
       end
 
       def sort_by

@@ -49,6 +49,19 @@ module Fuzzzy
       autoload :Index, 'fuzzzy/orm/mongoid/index'
     end
   end
+  
+  # Fuzzzy.configure do |config|
+  #   config.logger = Logger.new($stdout)
+  #   config.redis = ::Redis.new(
+  #     :host => 'localhost',
+  #     :port => 6379,
+  #     :database => 0
+  #   )
+  #   config.stopwords = %w{the stopwords list}
+  # end
+  def configure
+    yield self
+  end
 
   def logger
     @logger = default_logger unless defined?(@logger)
@@ -98,17 +111,17 @@ module Fuzzzy
   def default_stopwords
     @default_stopwords ||= load_stopwords(Fuzzzy.root.join('dictionary', 'en_stopwords.yml').to_s)
   end
-
+  
   def env
     return Rails.env if defined?(Rails)
     return Sinatra::Base.environment.to_s if defined?(Sinatra)
     ENV["RACK_ENV"] || 'development'
   end
-
+  
   def root
     @root ||= Pathname.new(File.expand_path('.'))
   end
-
+  
   protected
   def default_logger
     defined?(Rails) && Rails.respond_to?(:logger) ? Rails.logger : ::Logger.new($stdout)

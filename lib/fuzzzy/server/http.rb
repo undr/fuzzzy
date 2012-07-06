@@ -44,7 +44,7 @@ module Fuzzzy
         end
 
         def search_context
-          construct_context(:query, :distance, :sort_by)
+          construct_context(:query, :distance, :sort_by, :with_cache)
         end
       end
 
