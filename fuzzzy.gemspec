@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Fuzzzy::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Undr"]
-  s.email       = ["undr@yandex.ru"]
+  s.email       = ["lilipoper@gmail.com"]
   s.homepage    = "http://github.com/undr/fuzzzy"
   s.summary     = %q{Fuzzy Search client and server}
   s.description = %q{Fuzzy Search client and server}
