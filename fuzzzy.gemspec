@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "yard", "~> 0.6.0"
   s.add_development_dependency "ruby-debug19"
   s.add_development_dependency "bson_ext"
-  s.add_development_dependency "mongoid"
+  s.add_development_dependency "mongoid", "~> 2.4.7"
   s.add_development_dependency "pry"
   s.add_development_dependency 'ruby-prof'
   
