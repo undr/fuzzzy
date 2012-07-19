@@ -10,42 +10,51 @@ module FuzzzyBenchmark
     @search_method = meth
     @times = times
     prepare_indexes(default_context.merge(index_cntx))
-    
+
     Benchmark.bm do |benchmark|
       contexts.each do |context|
         report(benchmark, context.merge(index_cntx))
       end
-    
+
       yield(benchmark, self) if block_given?
     end
-    
+
   ensure
     Fuzzzy.redis.flushdb
     @search_method = nil
   end
-  
+
   def profile meth, context, index_cntx={}, times=100, &block
     @search_method = meth
     @times = times
     prepare_indexes(default_context.merge(index_cntx))
-    
+
     RubyProf.start
-    
+
     @times.times do
       searcher.search(context)
     end
-    
+
     result = RubyProf.stop
-    
-    html_printer = RubyProf::CallStackPrinter.new(result)
+
+    flat_printer = RubyProf::FlatPrinter.new(result)
+    callstack_printer = RubyProf::CallStackPrinter.new(result)
+    graph_printer = RubyProf::GraphHtmlPrinter.new(result)
+
     File.open(Fuzzzy.root.join('benchmark', 'reports', "#{search_method}_graph.html"), 'w') do |file| 
-      html_printer.print(file)
+      graph_printer.print(file)
+    end
+    File.open(Fuzzzy.root.join('benchmark', 'reports', "#{search_method}_callstack.html"), 'w') do |file| 
+      callstack_printer.print(file)
+    end
+    File.open(Fuzzzy.root.join('benchmark', 'reports', "#{search_method}_flat.txt"), 'w') do |file| 
+      flat_printer.print(file)
     end
   ensure
     Fuzzzy.redis.flushdb
     @search_method = nil
   end
-  
+
   def report bench, context
     context = default_context.merge(context)
     result, strings = get_result(context)
@@ -59,7 +68,7 @@ module FuzzzyBenchmark
     end
     puts ''
   end
-  
+
   def get_result cntx
     result = searcher.search(cntx)
     strings = result.map{|id|Fuzzzy.redis.get('fuzzzy:city:name:dictionary:' + id)}
@@ -108,11 +117,11 @@ module FuzzzyBenchmark
       result
     end
   end
-  
+
   def search_method
     @search_method
   end
-  
+
   def search_method= meth
     @search_method = meth
   end
